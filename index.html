@@ -19,11 +19,16 @@
 </main>
 <script>
 const byId=id=>document.getElementById(id), value=id=>{const raw=byId(id).value;return raw===""?null:Number(raw)},fmt=n=>Number.isFinite(n)?(n>0?"+":"")+n.toFixed(2):"—",isAxis=n=>Number.isFinite(n)&&n>=0&&n<=180,card=(label,body)=>`<div class="result"><small>${label}</small><strong>${body}</strong></div>`;
-function eyeResults(eye){const s=value(`${eye}-sphere`),c=value(`${eye}-cylinder`),a=value(`${eye}-axis`),add=value(`${eye}-add`),table={0.5:0.25,0.75:0.5,1:0.75,1.25:0.75,1.5:1,1.75:1.25,2:1.25,2.25:1.5,2.5:1.75,2.75:1.75,3:2,3.25:2.25,3.5:2.25,3.75:2.5,4:2.75,4.25:2.75,4.5:3},intAdd=Number.isFinite(add)?(table[add]??null):null;byId(`${eye}-int-add`).value=Number.isFinite(intAdd)?fmt(intAdd):"";const axis=isAxis(a)?`${a}°`:"—",cyl=`${fmt(c)} × ${axis}`;byId(`${eye}-results`).innerHTML=[card("Near",Number.isFinite(s)&&Number.isFinite(add)?`${fmt(s+add)} ${cyl}`:"—"),card("Intermediate prescription",Number.isFinite(s)&&Number.isFinite(intAdd)?`${fmt(s+intAdd)} ${cyl}`:"—"),card("Distance",Number.isFinite(s)?`${fmt(s)} ${cyl}`:"—")].join("")}
+function eyeResults(eye){const s=value(`${eye}-sphere`),c=value(`${eye}-cylinder`),a=value(`${eye}-axis`),add=value(`${eye}-add`),table={0.5:0.25,0.75:0.5,1:0.75,1.25:0.75,1.5:1,1.75:1.25,2:1.25,2.25:1.5,2.5:1.75,2.75:1.75,3:2,3.25:2.25,3.5:2.25,3.75:2.5,4:2.75,4.25:2.75,4.5:3},intAdd=Number.isFinite(add)?(table[add]??null):null;byId(`${eye}-int-add`).value=Number.isFinite(intAdd)?fmt(intAdd):"";const axis=isAxis(a)?`${a}°`:"—",cyl=Number.isFinite(c)&&isAxis(a)?` ${fmt(c)} × ${axis}`:"";byId(`${eye}-results`).innerHTML=[card("Near",Number.isFinite(s)&&Number.isFinite(add)?`${fmt(s+add)}${cyl}`:"—"),card("Intermediate prescription",Number.isFinite(s)&&Number.isFinite(intAdd)?`${fmt(s+intAdd)}${cyl}`:"—"),card("Distance",Number.isFinite(s)?`${fmt(s)}${cyl}`:"—")].join("")}
 function transpose(eye){const s=value(`${eye}-tr-sphere`),c=value(`${eye}-tr-cylinder`),a=value(`${eye}-tr-axis`),ok=Number.isFinite(s)&&Number.isFinite(c)&&isAxis(a),newAxis=ok?(a<=90?a+90:a-90):null;byId(`${eye}-transpose-results`).innerHTML=[card("Transposed sphere",ok?fmt(s+c):"—"),card("Transposed cylinder",ok?fmt(-c):"—"),card("Transposed axis",ok?`${newAxis}°`:"—")].join("")}
 function addCalc(){const n=value("near-sphere"),d=value("distance-sphere"),nc=value("near-cylinder"),dc=value("distance-cylinder"),na=value("near-axis"),da=value("distance-axis");let t="Enter the two sphere values to calculate ADD.";if(Number.isFinite(n)&&Number.isFinite(d))t=`Calculated ADD: ${fmt(n-d)}`;if(Number.isFinite(nc)&&Number.isFinite(dc)&&(nc!==dc||na!==da))t+=" — cylinder or axis differs; transpose to the same convention before using this result.";byId("add-result").textContent=t}
 function updateAll(){eyeResults("od");eyeResults("os");transpose("od");transpose("os");addCalc()}document.querySelectorAll("input").forEach(input=>input.addEventListener("input",updateAll));byId("clear-all").addEventListener("click",()=>{document.querySelectorAll("input").forEach(input=>input.value="");updateAll()});updateAll();
 </script></body></html>
+
+
+
+
+
 
 
 
